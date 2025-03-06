@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS company;
-CREATE DATABASE company;
+DROP DATABASE IF EXISTS employees;
+CREATE DATABASE employees;
 
-\c company;
+\c employees;
 
 CREATE TABLE department (
   department_id SERIAL PRIMARY KEY,
@@ -10,19 +10,20 @@ CREATE TABLE department (
 
 CREATE TABLE role (
     role_id SERIAL PRIMARY KEY,
-    role_title VARCHAR(30) UNIQUE NOT NULL --to hold role title
-    salary DECIMAL NOT NULL --to hold role salary
-    department_id INTEGER NOT NULL --to hold reference to department role belongs to
-
-)
+    role_title VARCHAR(30) UNIQUE NOT NULL,
+    role_salary DECIMAL NOT NULL,
+    role_department_id INTEGER NOT NULL,
+    FOREIGN KEY (role_department_id) REFERENCES department(department_id)
+);
     
  CREATE TABLE employee (
     employee_id SERIAL PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    role_id INTEGER NOT NULL,
+    employee_role_id INTEGER NOT NULL,
     manager_id INTEGER,
- )
+    FOREIGN KEY (employee_role_id) REFERENCES role(role_id)
+ );
    --`id`: `SERIAL PRIMARY KEY`
    --`first_name`: `VARCHAR(30) NOT NULL` to hold employee first name
    --`last_name`: `VARCHAR(30) NOT NULL` to hold employee last name
