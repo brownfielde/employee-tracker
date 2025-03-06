@@ -1,12 +1,12 @@
 -- Inserting data into department table
-INSERT INTO department (department_name) 
+INSERT INTO department (dpt_name) 
 VALUES
     ('Sales'),
     ('Engineering'),
     ('Finance'),
     ('Legal');
 
-INSERT INTO role (role_title, role_salary, role_department_id) 
+INSERT INTO role (role_title, role_salary, dpt_id) 
 VALUES 
     ('Sales Lead', 100000, 1),
     ('Salesperson', 80000, 1),
@@ -18,7 +18,7 @@ VALUES
     ('Lawyer', 190000, 4);
 
 
-INSERT INTO employee (employee_role_id,first_name,last_name, manager_id) 
+INSERT INTO employee (role_id,first_name,last_name, mngr_id) 
 VALUES
     (1, 'John', 'Doe', null),
     (2, 'Mike', 'Chan', 1 ),

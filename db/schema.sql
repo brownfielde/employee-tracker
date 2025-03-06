@@ -4,25 +4,26 @@ CREATE DATABASE employees;
 \c employees;
 
 CREATE TABLE department (
-  department_id SERIAL PRIMARY KEY,
-  department_name VARCHAR(30) UNIQUE NOT NULL --to hold department name
+  dpt_id SERIAL PRIMARY KEY,
+  dpt_name VARCHAR(30) UNIQUE NOT NULL --to hold department name
 );
 
 CREATE TABLE role (
     role_id SERIAL PRIMARY KEY,
     role_title VARCHAR(30) UNIQUE NOT NULL,
     role_salary DECIMAL NOT NULL,
-    role_department_id INTEGER NOT NULL,
-    FOREIGN KEY (role_department_id) REFERENCES department(department_id)
+    dpt_id INTEGER NOT NULL,
+    CONSTRAINT fk_dpt FOREIGN KEY (dpt_id) REFERENCES department(dpt_id)
 );
     
  CREATE TABLE employee (
     employee_id SERIAL PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    employee_role_id INTEGER NOT NULL,
-    manager_id INTEGER,
-    FOREIGN KEY (employee_role_id) REFERENCES role(role_id)
+    role_id INTEGER NOT NULL,
+    mngr_id INTEGER,
+   CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES role(role_id),
+   CONSTRAINT fk_emp FOREIGN KEY (mngr_id) REFERENCES employee(employee_id)
  );
    --`id`: `SERIAL PRIMARY KEY`
    --`first_name`: `VARCHAR(30) NOT NULL` to hold employee first name
