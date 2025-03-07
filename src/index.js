@@ -1,6 +1,7 @@
 import inquirer from 'inquirer';
 import { pool, connectToDb } from './connection.js';
 
+
 const startServer = async () => {
     await connectToDb();
     answer();
@@ -114,15 +115,24 @@ async function addEmployee() {
                 message: "What is the employee Manager ID?",
                 default: null,
             },
+
         ]);
 
-        await queryAsync(`INSERT INTO employee(role_id, first_name, last_name, mngr_id) VALUES (?, ?, ?, ?)`,
-            [answer.roleId, answer.firstName, answer.lastName, answer.mngrId || null]);
-
-        console.log('Employee added');
-        answer(); // Call the answer function to prompt the user
-    } catch (err) {
-        console.error('Error adding employee:', err);
+        await new Promise((resolve, reject) => {
+            pool.query(`INSERT INTO employee(role_id, first_name, last_name, mngr_id) VALUES ($1, $2, $3, $4)`,
+                [answer.roleId, answer.firstName, answer.lastName, answer.mngrId || null], (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        console.log('Employee added');
+                        console.table(result.rows);
+                        resolve(result);
+                    }
+                });
+        });
+        startServer(); // Call the answer function to prompt the user
+    } catch (error) {
+        console.error("Error adding employee:", error);
     }
 }
 
@@ -142,10 +152,10 @@ async function updateEmployeeRole() {
                 choices: ['Sales Lead', 'Salesperson', 'Lead Engineer', 'Software Engineer', 'Account Manager', 'Accountant', 'Legal Team Lead', 'Lawyer'],
             },
         ]);
-        await queryAsync('UPDATE employee SET role_title = $1 WHERE name = $1', [updateRole, updateEmployee]);
+        await queryAsync('UPDATE employee SET role_id = $1 WHERE role_id = $2', [updateRole, updateEmployee]);
 
         console.log('Employee role updated');
-        answer(); // Call the answer function to prompt the user
+        startServer(); // Call the answer function to prompt the user
     } catch (err) {
         console.error('Error updating employee role:', err);
     }
@@ -192,7 +202,7 @@ async function addRole() {
                     }
                 });
         });
-
+        startServer()
     } catch (err) {
         console.error('Error adding role:', err);
     }
@@ -208,7 +218,8 @@ async function viewDepartments() {
     }
 }
 
-async function addDepartment() {
+async function addDepartment(){
+    try{
     const answer = await inquirer.prompt([
         {
             type: "input",
@@ -220,16 +231,13 @@ async function addDepartment() {
             name: "dptName",
             message: "What is the name of the department?",
         },
-    ])
-    await new Promise((resolve, reject) => {
-        pool.query(`INSERT INTO department (dpt_id, dpt_name) VALUES ($1, $2)`,
-            [answer.dptId, answer.dptName], (err, result) => {
-                if (err) {
-                    reject(err); // Reject the promise on error
-                } else {
-                    console.log('Department added');
-                    resolve(result); // Resolve the promise on success
-                }
-            });
-    })
+        ]);
+    await pool.query(`INSERT INTO department (dpt_id, dpt_name) VALUES ($1, $2)`,
+        [answer.dptId, answer.dptName]);
+    console.log('Department added');
+} catch (err) {
+    console.error('Error adding department:', err); // Log the error
+} finally {
+    startServer(); // Ensure the server starts regardless of success or failure
+}
 }

@@ -17,7 +17,7 @@
   2. CD into 'employee-tracker' folder and open intergrated terminal in chosen code program
   3. run 'npm start' to begin application
   ## Screenshot 
-  ![alt text](N/A)
+  ![command line still image](/assets/employee-tracker-screencap.png)
   ## Dependencies 
   - Inquirer.js
   - Postgres
